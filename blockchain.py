@@ -1,1 +1,7 @@
-print(1 + 2)
+def greet():
+    greeting = 'Hello'
+    greeting += ' World!'
+    print(greeting)
+
+
+greet()
