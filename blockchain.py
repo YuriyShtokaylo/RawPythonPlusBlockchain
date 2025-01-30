@@ -40,7 +40,7 @@ while True:
     if user_choice == '1':
         tx_amount = get_transaction_value()
         add_value(tx_amount, get_last_blockchain_value())
-    else:
+    elif user_choice == '2':
         for block in blockchain:
             print('Outputting Block')
             print(block)
