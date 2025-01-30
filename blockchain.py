@@ -4,6 +4,8 @@ blockchain = []
 
 def get_last_blockchain_value():
     """" Return the last value of the current blockchain """
+    if len(blockchain) < 1:
+        return [1]
     return blockchain[-1]
 
 
@@ -27,10 +29,6 @@ def get_user_choice():
     user_input = input('Your choice: ')
     return user_input
 
-
-#Get first transaction input
-tx_amount = get_transaction_value()
-add_value(tx_amount)
 
 while True:
     print('Please choose')
