@@ -36,6 +36,7 @@ while True:
     print('Please choose')
     print('1: Add a new transaction value')
     print('2: Output the blockchain blocks')
+    print('0: To end program')
     user_choice = get_user_choice()
     if user_choice == '1':
         tx_amount = get_transaction_value()
@@ -44,5 +45,11 @@ while True:
         for block in blockchain:
             print('Outputting Block')
             print(block)
-    
+    elif user_choice == '0':
+        break
+    else:
+        print('Input was invalid, please pick a value from the list!')
+    print('Choice registered!')         
+print('Here is blockchain we get:')
+print(*blockchain)    
 print('Done!')
