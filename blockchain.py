@@ -44,7 +44,23 @@ def verify():
         else:
             return False
     return True
-        
+
+
+def verify_chain():
+    block_index = 0
+    is_valid = True
+    for block in blockchain:
+        if block_index == 0:
+            block_index += 1
+            continue
+        if block[0] == blockchain[block_index - 1]:
+            is_valid = True
+        else:
+            is_valid = False
+            break
+        block_index += 1
+    return is_valid        
+                
 
 while True:
     print('Please choose')
@@ -67,6 +83,9 @@ while True:
         break
     else:
         print('Input was invalid, please pick a value from the list!')
+    if not verify_chain():
+        print('Invalid blockchain!')
+        break    
     print(f'Choice registered! {verify()}')         
 print('Here is blockchain we get:')
 print(*blockchain)    
