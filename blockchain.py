@@ -27,3 +27,5 @@ add_value(last_transaction=get_last_blockchain_value(), transaction_amount=get_u
 add_value(get_user_input(), get_last_blockchain_value())
 
 print(blockchain)
+for block in blockchain:
+    print(block)
