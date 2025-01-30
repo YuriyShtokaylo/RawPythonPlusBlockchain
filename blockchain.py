@@ -48,6 +48,8 @@ while True:
     elif user_choice == '0':
         break
     else:
-        continue        
-    
+        print('Input was invalid, please pick a value from the list!')
+    print('Choice registered!')         
+print('Here is blockchain we get:')
+print(*blockchain)    
 print('Done!')
