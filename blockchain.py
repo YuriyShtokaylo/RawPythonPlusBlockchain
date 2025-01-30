@@ -5,7 +5,7 @@ blockchain = []
 def get_last_blockchain_value():
     """" Return the last value of the current blockchain """
     if len(blockchain) < 1:
-        return [1]
+        return None
     return blockchain[-1]
 
 
@@ -16,6 +16,8 @@ def add_value(transaction_amount, last_transaction=[1]):
         :transaction_amount: The amount that should be added.
         :last_transaction: The last blockchain transaction (default [1])
     '''
+    if last_transaction is None:
+        last_transaction = [1]
     blockchain.append([last_transaction, transaction_amount])  
 
 
