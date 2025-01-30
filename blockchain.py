@@ -31,12 +31,27 @@ def get_user_choice():
     user_input = input('Your choice: ')
     return user_input
 
+def verify():
+    l = len(blockchain)
+    if l < 2:
+        return True#None
+    i = l
+    while i >= 2:
+        current = blockchain[i-1]
+        to_verify = blockchain[i-2]
+        if current[0] == to_verify:
+            i -= 1
+        else:
+            return False
+    return True
+        
 
 while True:
     print('Please choose')
     print('1: Add a new transaction value')
     print('2: Output the blockchain blocks')
-    print('0: To end program')
+    print('h: manipulate the chain')
+    print('q: To end program')
     user_choice = get_user_choice()
     if user_choice == '1':
         tx_amount = get_transaction_value()
@@ -45,11 +60,14 @@ while True:
         for block in blockchain:
             print('Outputting Block')
             print(block)
-    elif user_choice == '0':
+    elif user_choice == 'h':
+        if len(blockchain) >= 1:
+            blockchain[0] = [2]
+    elif user_choice == 'q':
         break
     else:
         print('Input was invalid, please pick a value from the list!')
-    print('Choice registered!')         
+    print(f'Choice registered! {verify()}')         
 print('Here is blockchain we get:')
 print(*blockchain)    
 print('Done!')
