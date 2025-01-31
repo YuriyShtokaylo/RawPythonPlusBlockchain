@@ -1,12 +1,12 @@
 MINING_REWARD = 10
 SYSTEM_ACCOUNT = 'MINING'
 
-SENDER_CONST = 'sender'
-RECIPIENT_CONST = 'recipient'
-AMOUNT_CONST = 'amount'
-PREVIOUS_HASH_CONST = 'previous_hash'
-INDEX_CONST = 'index'
-TRANSACTIONS_CONST = 'transactions'
+SENDER = 'sender'
+RECIPIENT = 'recipient'
+AMOUNT = 'amount'
+PREVIOUS_HASH = 'previous_hash'
+INDEX = 'index'
+TRANSACTIONS = 'transactions'
 
 
 ASK_FOR_RECIPIENT_MSG = 'Enter the recipient of the transaction: '
@@ -30,9 +30,9 @@ F_T_MSG = 'Transaction failed!'
 
 
 GENESIS_BLOCK = {
-    PREVIOUS_HASH_CONST: '', 
-    INDEX_CONST: 0, 
-    TRANSACTIONS_CONST: []
+    PREVIOUS_HASH: '', 
+    INDEX: 0, 
+    TRANSACTIONS: []
 }
 
 
@@ -51,8 +51,8 @@ def get_last_blockchain_value():
 
 
 def verify_transaction(transaction):
-    sender_balance = get_balance(transaction[SENDER_CONST])
-    return sender_balance >= transaction[AMOUNT_CONST]
+    sender_balance = get_balance(transaction[SENDER])
+    return sender_balance >= transaction[AMOUNT]
 
 
 def add_transaction(recipient, sender=owner, amount=1.0):
@@ -64,9 +64,9 @@ def add_transaction(recipient, sender=owner, amount=1.0):
         :amount: Transaction amount (default 1.0 coin)
     '''
     transaction = {
-        SENDER_CONST: sender, 
-        RECIPIENT_CONST: recipient, 
-        AMOUNT_CONST: amount
+        SENDER: sender, 
+        RECIPIENT: recipient, 
+        AMOUNT: amount
     }
     if verify_transaction(transaction):
         open_transactions.append(transaction)
@@ -80,15 +80,15 @@ def mine_block():
     last_block = blockchain[-1]
     hashed_block = hash_block(last_block)
     reward_transaction = {
-        SENDER_CONST: SYSTEM_ACCOUNT,
-        RECIPIENT_CONST: owner,
-        AMOUNT_CONST: MINING_REWARD
+        SENDER: SYSTEM_ACCOUNT,
+        RECIPIENT: owner,
+        AMOUNT: MINING_REWARD
     }
     open_transactions.append(reward_transaction)
     block = {
-        PREVIOUS_HASH_CONST: hashed_block, 
-        INDEX_CONST: len(blockchain), 
-        TRANSACTIONS_CONST: open_transactions
+        PREVIOUS_HASH: hashed_block, 
+        INDEX: len(blockchain), 
+        TRANSACTIONS: open_transactions
     }
     blockchain.append(block)
     return True
@@ -110,7 +110,7 @@ def verify_chain():
     for (index, block) in enumerate(blockchain):
         if index == 0:
             continue
-        if block[PREVIOUS_HASH_CONST] != hash_block(blockchain[index - 1]):
+        if block[PREVIOUS_HASH] != hash_block(blockchain[index - 1]):
             return False    
     return True       
 
@@ -120,14 +120,14 @@ def hash_block(block):
 
 
 def get_balance(participant):
-    tx_sender = [[tx[AMOUNT_CONST] for tx in block[TRANSACTIONS_CONST] if tx[SENDER_CONST] == participant] for block in blockchain]
-    open_tx_sender = [tx[AMOUNT_CONST] for tx in open_transactions if tx[SENDER_CONST] == participant]
+    tx_sender = [[tx[AMOUNT] for tx in block[TRANSACTIONS] if tx[SENDER] == participant] for block in blockchain]
+    open_tx_sender = [tx[AMOUNT] for tx in open_transactions if tx[SENDER] == participant]
     tx_sender.append(open_tx_sender)
     amount_sent = 0
     for tx in tx_sender[1:]:
         if len(tx) > 0:
             amount_sent += tx[0]
-    tx_recipient = [[tx[AMOUNT_CONST] for tx in block[TRANSACTIONS_CONST] if tx[RECIPIENT_CONST] == participant] for block in blockchain]
+    tx_recipient = [[tx[AMOUNT] for tx in block[TRANSACTIONS] if tx[RECIPIENT] == participant] for block in blockchain]
     amount_received = 0
     for tx in tx_recipient[1:]:
         if len(tx) > 0:
@@ -172,9 +172,9 @@ while waiting_for_input:
     elif user_choice == 'h':
         if len(blockchain) >= 1:
             blockchain[0] = {
-                PREVIOUS_HASH_CONST: '', 
-                INDEX_CONST: 0, 
-                TRANSACTIONS_CONST: [{SENDER_CONST: 'Wrong', RECIPIENT_CONST: 'WrongWrongWrong', AMOUNT_CONST: -1}]  
+                PREVIOUS_HASH: '', 
+                INDEX: 0, 
+                TRANSACTIONS: [{SENDER: 'Wrong', RECIPIENT: 'WrongWrongWrong', AMOUNT: -1}]  
             }
     elif user_choice == 'q':
         waiting_for_input = False
