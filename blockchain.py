@@ -1,14 +1,5 @@
-# Initializing our blockchain list
-genesis_block = {
-    'previous_hash': '', 
-    'index': 0, 
-    'transactions': []
-}
-blockchain = [genesis_block]
-open_transactions = []
-owner = 'Yuriy'
-participants = {owner}
-
+MINING_REWARD = 10
+SYSTEM_ACCOUNT = 'MINING'
 
 sender_const = 'sender'
 recipient_const = 'recipient'
@@ -34,6 +25,20 @@ e_msg = 'Invalid blockchain!'
 q_msg = 'User left!'
 r_msg = 'Here is blockchain we get:'
 f_msg = 'Done!'
+
+
+genesis_block = {
+    'previous_hash': '', 
+    'index': 0, 
+    'transactions': []
+}
+
+
+# Initializing our blockchain list
+blockchain = [genesis_block]
+open_transactions = []
+owner = 'Yuriy'
+participants = {owner}
 
 
 def get_last_blockchain_value():
@@ -64,6 +69,12 @@ def add_transaction(recipient, sender=owner, amount=1.0):
 def mine_block():
     last_block = blockchain[-1]
     hashed_block = hash_block(last_block)
+    reward_transaction = {
+        sender_const: SYSTEM_ACCOUNT,
+        recipient_const: owner,
+        amount_const: MINING_REWARD
+    }
+    open_transactions.append(reward_transaction)
     block = {
         previous_hash_const: hashed_block, 
         index_const: len(blockchain), 
@@ -101,12 +112,12 @@ def hash_block(block):
 def get_balance(participant):
     tx_sender = [[tx[amount_const] for tx in block[transactions_const] if tx[sender_const] == participant] for block in blockchain]
     amount_sent = 0
-    for tx in tx_sender:
+    for tx in tx_sender[1:]:
         if len(tx) > 0:
             amount_sent += tx[0]
     tx_recipient = [[tx[amount_const] for tx in block[transactions_const] if tx[recipient_const] == participant] for block in blockchain]
     amount_received = 0
-    for tx in tx_recipient:
+    for tx in tx_recipient[1:]:
         if len(tx) > 0:
             amount_received += tx[0]        
     return amount_received - amount_sent
