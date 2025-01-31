@@ -100,7 +100,16 @@ def hash_block(block):
 
 def get_balance(participant):
     tx_sender = [[tx[amount_const] for tx in block[transactions_const] if tx[sender_const] == participant] for block in blockchain]
-    return tx_sender
+    amount_sent = 0
+    for tx in tx_sender:
+        if len(tx) > 0:
+            amount_sent += tx[0]
+    tx_recipient = [[tx[amount_const] for tx in block[transactions_const] if tx[recipient_const] == participant] for block in blockchain]
+    amount_received = 0
+    for tx in tx_recipient:
+        if len(tx) > 0:
+            amount_received += tx[0]        
+    return amount_received - amount_sent
                     
 
 def print_blockchain_elements():
