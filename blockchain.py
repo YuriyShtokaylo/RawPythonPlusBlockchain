@@ -10,6 +10,32 @@ owner = 'Yuriy'
 participants = {owner}
 
 
+sender_const = 'sender'
+recipient_const = 'recipient'
+amount_const = 'amount'
+previous_hash_const = 'previous_hash'
+index_const = 'index'
+transactions_const = 'transactions'
+
+
+ask_for_recipient_msg = 'Enter the recipient of the transaction: '
+ask_for_amount_msg = 'Your transaction amount please: '
+choice_msg = 'Your choice: '
+o_block_msg = 'Outputting Block'
+ask_msg = 'Please choose'
+o1_msg = '1: Add a new transaction value'
+o2_msg = '2: Mine a new block'
+o3_msg = '3: Output the blockchain blocks'
+o4_msg = '4: Output participants'
+o5_msg = 'h: manipulate the chain'
+o6_msg = 'q: To end program'
+o7_msg = 'Input was invalid, please pick a value from the list!'
+e_msg = 'Invalid blockchain!'
+q_msg = 'User left!'
+r_msg = 'Here is blockchain we get:'
+f_msg = 'Done!'
+
+
 def get_last_blockchain_value():
     """" Return the last value of the current blockchain """
     if len(blockchain) < 1:
@@ -26,9 +52,9 @@ def add_transaction(recipient, sender=owner, amount=1.0):
         :amount: Transaction amount (default 1.0 coin)
     '''
     transaction = {
-        'sender': sender, 
-        'recipient': recipient, 
-        'amount': amount
+        sender_const: sender, 
+        recipient_const: recipient, 
+        amount_const: amount
     }
     open_transactions.append(transaction)
     participants.add(sender)
@@ -39,9 +65,9 @@ def mine_block():
     last_block = blockchain[-1]
     hashed_block = hash_block(last_block)
     block = {
-        'previous_hash': hashed_block, 
-        'index': len(blockchain), 
-        'transactions': open_transactions
+        previous_hash_const: hashed_block, 
+        index_const: len(blockchain), 
+        transactions_const: open_transactions
     }
     blockchain.append(block)
     return True
@@ -49,13 +75,13 @@ def mine_block():
     
 def get_transaction_value():
     """ Returns the users input (a new transaction amount) as a float."""
-    tx_recipient = input('Enter the recipient of the transaction: ')
-    tx_amount = float(input('Your transaction amount please: '))
+    tx_recipient = input(ask_for_recipient_msg)
+    tx_amount = float(input(ask_for_amount_msg))
     return (tx_recipient, tx_amount)
 
 
 def get_user_choice():
-    user_input = input('Your choice: ')
+    user_input = input(choice_msg)
     return user_input
 
 
@@ -63,7 +89,7 @@ def verify_chain():
     for (index, block) in enumerate(blockchain):
         if index == 0:
             continue
-        if block['previous_hash'] != hash_block(blockchain[index - 1]):
+        if block[previous_hash_const] != hash_block(blockchain[index - 1]):
             return False    
     return True       
 
@@ -73,13 +99,13 @@ def hash_block(block):
 
 
 def get_balance(participant):
-    tx_sender = [[tx['amount'] for tx in block['transactions'] if tx['sender'] == participant] for block in blockchain]
+    tx_sender = [[tx[amount_const] for tx in block[transactions_const] if tx[sender_const] == participant] for block in blockchain]
     return tx_sender
                     
 
 def print_blockchain_elements():
     for block in blockchain:
-        print('Outputting Block')
+        print(o_block_msg)
         print(block)
     else:
         print('-' * 20)
@@ -88,13 +114,13 @@ def print_blockchain_elements():
 waiting_for_input = True
 
 while waiting_for_input:
-    print('Please choose')
-    print('1: Add a new transaction value')
-    print('2: Mine a new block')
-    print('3: Output the blockchain blocks')
-    print('4: Output participants')
-    print('h: manipulate the chain')
-    print('q: To end program')
+    print(ask_msg)
+    print(o1_msg)
+    print(o2_msg)
+    print(o3_msg)
+    print(o4_msg)
+    print(o5_msg)
+    print(o6_msg)
     user_choice = get_user_choice()
     if user_choice == '1':
         tx_data = get_transaction_value()
@@ -111,20 +137,20 @@ while waiting_for_input:
     elif user_choice == 'h':
         if len(blockchain) >= 1:
             blockchain[0] = {
-                'previous_hash': '', 
-                'index': 0, 
-                'transactions': [{'sender': 'Wrong', 'recipient': 'WrongWrongWrong', 'amount': -1}]  
+                previous_hash_const: '', 
+                index_const: 0, 
+                transactions_const: [{sender_const: 'Wrong', recipient_const: 'WrongWrongWrong', amount_const: -1}]  
             }
     elif user_choice == 'q':
         waiting_for_input = False
     else:
-        print('Input was invalid, please pick a value from the list!')
+        print(o7_msg)
     if not verify_chain():
-        print('Invalid blockchain!')
+        print(e_msg)
         break   
     print(get_balance(owner))         
 else:
-    print('User left!')
-    print('Here is blockchain we get:')
+    print(q_msg)
+    print(r_msg)
     print(*blockchain)    
-    print('Done!')
+    print(f_msg)
