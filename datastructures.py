@@ -29,3 +29,11 @@ print(type(s))
 #This will not work SETS ARE NOT ITERABLE THEY DON'T HAVE ANY INDEXES
 # del(s['Yuriy'])
 print(s) 
+
+new_list = [True, True, False]
+print(any(new_list))
+print(all(new_list))
+number_list = [1, 2, 3, -5]
+greater_then_0 = [el for el in number_list if el > 0]
+print(greater_then_0)
+print(all([el > 0 for el in number_list]))
