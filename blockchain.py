@@ -84,11 +84,12 @@ def mine_block():
         RECIPIENT: owner,
         AMOUNT: MINING_REWARD
     }
-    open_transactions.append(reward_transaction)
+    copied_transactions = open_transactions[:]
+    copied_transactions.append(reward_transaction)
     block = {
         PREVIOUS_HASH: hashed_block, 
         INDEX: len(blockchain), 
-        TRANSACTIONS: open_transactions
+        TRANSACTIONS: copied_transactions
     }
     blockchain.append(block)
     return True
