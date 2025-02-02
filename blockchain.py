@@ -184,7 +184,7 @@ while waiting_for_input:
     if not verify_chain():
         print(E_MSG)
         break   
-    print(get_balance(owner))         
+    print('Balance of {}: {:6.2f}'.format(owner, get_balance(owner)))         
 else:
     print(Q_MSG)
     print(R_MSG)
