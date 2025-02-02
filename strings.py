@@ -21,6 +21,8 @@ print(long_way)
 #using_format = 'I am {name} and I am {years} years old.'.format(name=name, years=age)
 using_format = 'I am {0} and I am {1} years old. I really am named {0}'.format(name, age)
 print(using_format)
+#Shorter format and escaping characters
+print(f'I\'m {name} and I\'m {age} years old.')
 
 #Formating FLOATS numbers:
 funds = 150.9723
