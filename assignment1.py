@@ -1,21 +1,30 @@
-names = ['Ivan', 'Pavlo', 'Yuriy', 'Oleg', 'Roman', 'Bogdan', 'Mykola']
+#Defining and assigning variables
+name = input('Please enter your name: ')#'Yuriy'
+age = input('Please enter your age: ')#31
 
-for name in names:
-    print(name, len(name))
+#Constant data
+decade = 10
 
-for name in names:
-    l = len(name)
-    if l > 5:
-        print(name) 
-    if 'n' in name or 'N' in name:
-        print('Yes')
-    else:
-        print('No')        
-        
-l = len(names)
+#Functions used for assignment
+def message(name = 'Yuriy', age = 31):
+    """
+    Form response string
+        Arguments:
+        :name: Name
+        :age: Age
+    """
+    return f'My name is {name}. I am {age} years old.'
 
-print(names)
-while l > 0:
-    names.pop()
-    print(names)
-    l -= 1           
+
+def display_some_data(data0, data1):
+    """ Print some data """
+    print(message(data0, data1))
+    
+    
+def count_decades(age = 31):
+    """ Count number of dacedes based on age"""
+    print(f'You already lived {int(age)//decade} decades')    
+    
+
+display_some_data(name, age)
+count_decades(age)    
