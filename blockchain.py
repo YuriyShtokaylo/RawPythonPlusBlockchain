@@ -11,6 +11,7 @@ AMOUNT = 'amount'
 PREVIOUS_HASH = 'previous_hash'
 INDEX = 'index'
 TRANSACTIONS = 'transactions'
+PROOF = 'proof'
 
 
 ASK_FOR_RECIPIENT_MSG = 'Enter the recipient of the transaction: '
@@ -36,7 +37,8 @@ F_T_MSG = 'Transaction failed!'
 GENESIS_BLOCK = {
     PREVIOUS_HASH: '', 
     INDEX: 0, 
-    TRANSACTIONS: []
+    TRANSACTIONS: [],
+    PROOF: 100
 }
 
 
@@ -45,6 +47,31 @@ blockchain = [GENESIS_BLOCK]
 open_transactions = []
 owner = 'Yuriy'
 participants = {owner}
+
+
+def hash_block(block):
+    #EXPLANATION:
+    #hashlib uses sha256 to generate hash in binary format
+    #we pass there string generated from our dict by method of json library - dumps
+    #we use encode on it to get corect encoding
+    #we use hexdigest on result of heshing to get a string result
+    return hl.sha256(json.dumps(block).encode()).hexdigest()
+
+
+def valid_proof(transactions, last_hash, proof):
+    guess = (str(transactions) + str(last_hash) + str(proof)).encode()
+    guess_hash =hl.sha256(guess).hexdigest()
+    print(guess_hash)
+    return guess_hash[0:2] == '00'
+
+
+def proof_of_work():
+    last_block = blockchain[-1]
+    last_hash = hash_block(last_block)
+    proof = 0
+    while valid_proof(open_transactions, last_hash, proof):
+        proof += 1
+    return proof            
 
 
 def get_last_blockchain_value():
@@ -83,6 +110,7 @@ def add_transaction(recipient, sender=owner, amount=1.0):
 def mine_block():
     last_block = blockchain[-1]
     hashed_block = hash_block(last_block)
+    proof = proof_of_work()
     #Let see our hash:
     print(hashed_block)
     reward_transaction = {
@@ -95,7 +123,8 @@ def mine_block():
     block = {
         PREVIOUS_HASH: hashed_block, 
         INDEX: len(blockchain), 
-        TRANSACTIONS: copied_transactions
+        TRANSACTIONS: copied_transactions,
+        PROOF: proof
     }
     blockchain.append(block)
     return True
@@ -119,16 +148,10 @@ def verify_chain():
             continue
         if block[PREVIOUS_HASH] != hash_block(blockchain[index - 1]):
             return False    
+        if not valid_proof(block[TRANSACTIONS][:-1], block[PREVIOUS_HASH], block[PROOF]):
+            print('Proof of work is invalid')
+            return False
     return True       
-
-
-def hash_block(block):
-    #EXPLANATION:
-    #hashlib uses sha256 to generate hash in binary format
-    #we pass there string generated from our dict by method of json library - dumps
-    #we use encode on it to get corect encoding
-    #we use hexdigest on result of heshing to get a string result
-    return hl.sha256(json.dumps(block).encode()).hexdigest()
 
 
 def get_balance(participant):
