@@ -69,7 +69,7 @@ def proof_of_work():
     last_block = blockchain[-1]
     last_hash = hash_block(last_block)
     proof = 0
-    while valid_proof(open_transactions, last_hash, proof):
+    while not valid_proof(open_transactions, last_hash, proof):
         proof += 1
     return proof            
 
