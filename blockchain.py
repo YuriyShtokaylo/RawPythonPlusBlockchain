@@ -1,6 +1,7 @@
 from functools import reduce
 import hashlib as hl
 import json
+from collections import OrderedDict
 
 MINING_REWARD = 10
 SYSTEM_ACCOUNT = 'MINING'
@@ -55,7 +56,7 @@ def hash_block(block):
     #we pass there string generated from our dict by method of json library - dumps
     #we use encode on it to get corect encoding
     #we use hexdigest on result of heshing to get a string result
-    return hl.sha256(json.dumps(block).encode()).hexdigest()
+    return hl.sha256(json.dumps(block, sort_keys=True).encode()).hexdigest()
 
 
 def valid_proof(transactions, last_hash, proof):
@@ -94,11 +95,16 @@ def add_transaction(recipient, sender=owner, amount=1.0):
         :recipient: Transaction recipient (default [1])
         :amount: Transaction amount (default 1.0 coin)
     '''
-    transaction = {
-        SENDER: sender, 
-        RECIPIENT: recipient, 
-        AMOUNT: amount
-    }
+    # transaction = {
+    #     SENDER: sender, 
+    #     RECIPIENT: recipient, 
+    #     AMOUNT: amount
+    # }
+    transaction = OrderedDict([
+        (SENDER, sender), 
+         (RECIPIENT, recipient), 
+         (AMOUNT, amount)
+        ])
     if verify_transaction(transaction):
         open_transactions.append(transaction)
         participants.add(sender)
@@ -113,11 +119,16 @@ def mine_block():
     proof = proof_of_work()
     #Let see our hash:
     print(hashed_block)
-    reward_transaction = {
-        SENDER: SYSTEM_ACCOUNT,
-        RECIPIENT: owner,
-        AMOUNT: MINING_REWARD
-    }
+    # reward_transaction = {
+    #     SENDER: SYSTEM_ACCOUNT,
+    #     RECIPIENT: owner,
+    #     AMOUNT: MINING_REWARD
+    # }
+    reward_transaction = OrderedDict([
+        (SENDER, SYSTEM_ACCOUNT),
+        (RECIPIENT, owner),
+        (AMOUNT, MINING_REWARD)
+    ])
     copied_transactions = open_transactions[:]
     copied_transactions.append(reward_transaction)
     block = {
