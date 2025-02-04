@@ -1,4 +1,6 @@
 import functools
+import hashlib
+import json
 
 MINING_REWARD = 10
 SYSTEM_ACCOUNT = 'MINING'
@@ -81,6 +83,8 @@ def add_transaction(recipient, sender=owner, amount=1.0):
 def mine_block():
     last_block = blockchain[-1]
     hashed_block = hash_block(last_block)
+    #Let see our hash:
+    print(hashed_block)
     reward_transaction = {
         SENDER: SYSTEM_ACCOUNT,
         RECIPIENT: owner,
@@ -119,7 +123,12 @@ def verify_chain():
 
 
 def hash_block(block):
-    return '-'.join([str(block[key]) for key in block])
+    #EXPLANATION:
+    #hashlib uses sha256 to generate hash in binary format
+    #we pass there string generated from our dict by method of json library - dumps
+    #we use encode on it to get corect encoding
+    #we use hexdigest on result of heshing to get a string result
+    return hashlib.sha256(json.dumps(block).encode()).hexdigest()
 
 
 def get_balance(participant):
