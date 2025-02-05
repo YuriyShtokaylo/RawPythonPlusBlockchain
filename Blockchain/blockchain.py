@@ -1,46 +1,12 @@
 from functools import reduce
 import hashlib as hl
-import json
 from collections import OrderedDict
 
-MINING_REWARD = 10
-SYSTEM_ACCOUNT = 'MINING'
 
-SENDER = 'sender'
-RECIPIENT = 'recipient'
-AMOUNT = 'amount'
-PREVIOUS_HASH = 'previous_hash'
-INDEX = 'index'
-TRANSACTIONS = 'transactions'
-PROOF = 'proof'
-
-
-ASK_FOR_RECIPIENT_MSG = 'Enter the recipient of the transaction: '
-ASK_FOR_AMOUNT_MSG = 'Your transaction amount please: '
-CHOICE_MSG = 'Your choice: '
-O_BLOCK_MSG = 'Outputting Block'
-ASK_MSG = 'Please choose'
-O1_MSG = '1: Add a new transaction value'
-O2_MSG = '2: Mine a new block'
-O3_MSG = '3: Output the blockchain blocks'
-O4_MSG = '4: Output participants'
-O5_MSG = 'h: manipulate the chain'
-O6_MSG = 'q: To end program'
-O7_MSG = 'Input was invalid, please pick a value from the list!'
-E_MSG = 'Invalid blockchain!'
-Q_MSG = 'User left!'
-R_MSG = 'Here is blockchain we get:'
-F_MSG = 'Done!'
-S_T_MSG = 'Added transaction!'
-F_T_MSG = 'Transaction failed!'
-
-
-GENESIS_BLOCK = {
-    PREVIOUS_HASH: '', 
-    INDEX: 0, 
-    TRANSACTIONS: [],
-    PROOF: 100
-}
+from Helpers.consts import GENESIS_BLOCK, SENDER, RECIPIENT, AMOUNT, SYSTEM_ACCOUNT, MINING_REWARD, PREVIOUS_HASH, INDEX, TRANSACTIONS, PROOF, ASK_MSG, O1_MSG, O2_MSG, O3_MSG, O4_MSG, O5_MSG, O6_MSG, O7_MSG, O_BLOCK_MSG, S_T_MSG, F_MSG, F_T_MSG, E_MSG, Q_MSG, R_MSG
+from Helpers.hash_helper import hash_string_256, hash_block
+from Helpers.input_helper import get_user_choice, get_transaction_value
+from Helpers.proof_helper import valid_proof
 
 
 # Initializing our blockchain list
@@ -50,29 +16,13 @@ owner = 'Yuriy'
 participants = {owner}
 
 
-def hash_block(block):
-    #EXPLANATION:
-    #hashlib uses sha256 to generate hash in binary format
-    #we pass there string generated from our dict by method of json library - dumps
-    #we use encode on it to get corect encoding
-    #we use hexdigest on result of heshing to get a string result
-    return hl.sha256(json.dumps(block, sort_keys=True).encode()).hexdigest()
-
-
-def valid_proof(transactions, last_hash, proof):
-    guess = (str(transactions) + str(last_hash) + str(proof)).encode()
-    guess_hash =hl.sha256(guess).hexdigest()
-    print(guess_hash)
-    return guess_hash[0:2] == '00'
-
-
 def proof_of_work():
     last_block = blockchain[-1]
     last_hash = hash_block(last_block)
     proof = 0
     while not valid_proof(open_transactions, last_hash, proof):
         proof += 1
-    return proof            
+    return proof     
 
 
 def get_last_blockchain_value():
@@ -80,11 +30,6 @@ def get_last_blockchain_value():
     if len(blockchain) < 1:
         return None
     return blockchain[-1]
-
-
-def verify_transaction(transaction):
-    sender_balance = get_balance(transaction[SENDER])
-    return sender_balance >= transaction[AMOUNT]
 
 
 def add_transaction(recipient, sender=owner, amount=1.0):
@@ -140,18 +85,6 @@ def mine_block():
     blockchain.append(block)
     return True
 
-    
-def get_transaction_value():
-    """ Returns the users input (a new transaction amount) as a float."""
-    tx_recipient = input(ASK_FOR_RECIPIENT_MSG)
-    tx_amount = float(input(ASK_FOR_AMOUNT_MSG))
-    return (tx_recipient, tx_amount)
-
-
-def get_user_choice():
-    user_input = input(CHOICE_MSG)
-    return user_input
-
 
 def verify_chain():
     for (index, block) in enumerate(blockchain):
@@ -173,6 +106,11 @@ def get_balance(participant):
     tx_recipient = [[tx[AMOUNT] for tx in block[TRANSACTIONS] if tx[RECIPIENT] == participant] for block in blockchain]
     amount_received = reduce(lambda tx_sum, tx_amt: tx_sum + sum(tx_amt) if len(tx_amt) > 0 else tx_sum + 0, tx_recipient, 0)   
     return amount_received - amount_sent
+
+
+def verify_transaction(transaction):
+    sender_balance = get_balance(transaction[SENDER])
+    return sender_balance >= transaction[AMOUNT]
                     
 
 def print_blockchain_elements():
