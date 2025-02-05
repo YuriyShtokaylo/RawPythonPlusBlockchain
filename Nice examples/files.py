@@ -43,8 +43,10 @@ def do_stuff():
         line = file.readline()# read next line
     file.close() 
     
+    print('DONE')
+    
     with open(FILE, mode='a') as f:
-        f.write(f'\nWe already have {len(lines)}. Now lets write one more. This line is writed using WITH!')  
+        f.write(f'\nWe already have {len(lines)}. Now lets write one more. This line is writed using WITH!') 
     
 
 do_stuff()
@@ -54,5 +56,9 @@ file.write('Add one more line') #Actually it doesn't add new line :-(
 file.write('\nThis will :-)')
 file.write(f'\n{user_input}')
 file.close()
+
+user_input = input('Please enter new input:')
+
+do_stuff()
 
 do_stuff()
