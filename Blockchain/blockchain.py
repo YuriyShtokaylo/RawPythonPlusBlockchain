@@ -56,9 +56,16 @@ def load_data():
         blockchain = updated_blockchain
         open_transactions = [OrderedDict([(k, v) for k, v in d.items()]) for d in json.loads(file_content[1])]
         
-        
-load_data()
-
+try:        
+    load_data()
+except IOError:
+    print('File not found!')
+except ValueError:
+    print('Value error!')
+except:
+    print('Wildcard!')
+finally:
+    print('I use try - except - finally')
 
 def proof_of_work():
     last_block = blockchain[-1]
