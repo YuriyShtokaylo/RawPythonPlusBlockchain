@@ -29,11 +29,18 @@ def load_data():
         file_content = f.readlines()
         global blockchain
         global open_transactions
+        #blockchain = [ block[TRANSACTIONS] = OrderedDict( [(k, v) for k, v in block[TRANSACTIONS].items()] ) for block in json.loads(file_content[0][:-1]) ]
         blockchain = json.loads(file_content[0][:-1])
+        updated_blockchain = []
+        for block in blockchain:
+            updated_block = block[:]
+            updated_block[TRANSACTIONS] = OrderedDict( [(k, v) for k, v in block[TRANSACTIONS].items()] )
+            updated_blockchain.append(updated_block)
+        blockchain = updated_blockchain
         open_transactions = [OrderedDict([(k, v) for k, v in d.items()]) for d in json.loads(file_content[1])]
         
         
-load_data()
+#load_data()
 
 
 def proof_of_work():
