@@ -33,11 +33,14 @@ def load_data():
         blockchain = json.loads(file_content[0][:-1])
         updated_blockchain = []
         for block in blockchain:
+            '''
             updated_block = {}
             updated_block[PREVIOUS_HASH] = block[PREVIOUS_HASH]
             updated_block[INDEX] = block[INDEX]
-            updated_block[TRANSACTIONS] = [ OrderedDict( [(k, v) for k, v in transaction.items()] ) for transaction in block[TRANSACTIONS] ] 
             updated_block[PROOF] = block[PROOF]
+            '''
+            updated_block = block.copy()
+            updated_block[TRANSACTIONS] = [ OrderedDict( [(k, v) for k, v in transaction.items()] ) for transaction in block[TRANSACTIONS] ] 
             updated_blockchain.append(updated_block)
         blockchain = updated_blockchain
         open_transactions = [OrderedDict([(k, v) for k, v in d.items()]) for d in json.loads(file_content[1])]
