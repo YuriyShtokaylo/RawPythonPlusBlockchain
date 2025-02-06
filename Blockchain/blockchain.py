@@ -1,6 +1,8 @@
 from functools import reduce
 import hashlib as hl
 from collections import OrderedDict
+import json
+import pickle
 
 
 from Helpers.consts import GENESIS_BLOCK, SENDER, RECIPIENT, AMOUNT, SYSTEM_ACCOUNT, MINING_REWARD, PREVIOUS_HASH, INDEX, TRANSACTIONS, PROOF, ASK_MSG, O1_MSG, O2_MSG, O3_MSG, O4_MSG, O5_MSG, O6_MSG, O7_MSG, O_BLOCK_MSG, S_T_MSG, F_MSG, F_T_MSG, E_MSG, Q_MSG, R_MSG
@@ -14,6 +16,55 @@ blockchain = [GENESIS_BLOCK]
 open_transactions = []
 owner = 'Yuriy'
 participants = {owner}
+
+
+def save_data():
+    with open('blockchain.txt', mode='w') as f:
+        f.write(json.dumps(blockchain))
+        f.write('\n')
+        f.write(json.dumps(open_transactions))
+    '''
+    with open('blockchain.txt', mode='wb') as f: #Work with binary
+        save_data = {
+            'chain': blockchain,
+            'ot': open_transactions
+        }
+        f.write(pickle.dumps(save_data))
+    '''
+        
+        
+def load_data():
+    '''
+    with open('blockchain.txt', mode='rb') as f:
+        file_content = pickle.loads(f.read())
+        print(file_content)
+        global blockchain
+        global open_transactions
+        blockchain = file_content['chain']
+        open_transactions = file_content['ot']
+    '''
+    with open('blockchain.txt', mode='r') as f:
+        file_content = f.readlines()
+        global blockchain
+        global open_transactions
+        #blockchain = [ block[TRANSACTIONS] = OrderedDict( [(k, v) for k, v in block[TRANSACTIONS].items()] ) for block in json.loads(file_content[0][:-1]) ]
+        blockchain = json.loads(file_content[0][:-1])
+        updated_blockchain = []
+        for block in blockchain:
+            
+            # updated_block = {}
+            # updated_block[PREVIOUS_HASH] = block[PREVIOUS_HASH]
+            # updated_block[INDEX] = block[INDEX]
+            # updated_block[PROOF] = block[PROOF]
+            
+            updated_block = block.copy()
+            updated_block[TRANSACTIONS] = [ OrderedDict( [(k, v) for k, v in transaction.items()] ) for transaction in block[TRANSACTIONS] ] 
+            updated_blockchain.append(updated_block)
+        blockchain = updated_blockchain
+        open_transactions = [OrderedDict([(k, v) for k, v in d.items()]) for d in json.loads(file_content[1])]
+        
+        
+load_data()
 
 
 def proof_of_work():
@@ -54,6 +105,7 @@ def add_transaction(recipient, sender=owner, amount=1.0):
         open_transactions.append(transaction)
         participants.add(sender)
         participants.add(recipient)
+        save_data()
         return True
     return False
 
@@ -143,6 +195,7 @@ while waiting_for_input:
     elif user_choice == '2':
         if mine_block():
             open_transactions = [] 
+            save_data()
     elif user_choice == '3':
         print_blockchain_elements()
     elif user_choice == '4':
