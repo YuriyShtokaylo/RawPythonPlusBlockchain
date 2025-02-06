@@ -19,19 +19,22 @@ participants = {owner}
 
 
 def save_data():
+    with open('blockchain.txt', mode='w') as f:
+        f.write(json.dumps(blockchain))
+        f.write('\n')
+        f.write(json.dumps(open_transactions))
+    '''
     with open('blockchain.txt', mode='wb') as f: #Work with binary
-    #with open('blockchain.txt', mode='w') as f:
-        # f.write(json.dumps(blockchain))
-        # f.write('\n')
-        # f.write(json.dumps(open_transactions))
         save_data = {
             'chain': blockchain,
             'ot': open_transactions
         }
         f.write(pickle.dumps(save_data))
+    '''
         
         
 def load_data():
+    '''
     with open('blockchain.txt', mode='rb') as f:
         file_content = pickle.loads(f.read())
         print(file_content)
@@ -59,7 +62,6 @@ def load_data():
             updated_blockchain.append(updated_block)
         blockchain = updated_blockchain
         open_transactions = [OrderedDict([(k, v) for k, v in d.items()]) for d in json.loads(file_content[1])]
-    '''
         
         
 load_data()
