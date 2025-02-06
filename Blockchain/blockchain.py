@@ -30,10 +30,10 @@ def load_data():
         global blockchain
         global open_transactions
         blockchain = json.loads(file_content[0][:-1])
-        open_transactions = OrderedDict([(k, v) for k, v in json.loads(file_content[1]).items()])
+        open_transactions = [OrderedDict([(k, v) for k, v in d.items()]) for d in json.loads(file_content[1])]
         
         
-#load_data()
+load_data()
 
 
 def proof_of_work():
