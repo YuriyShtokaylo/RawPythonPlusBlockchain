@@ -104,7 +104,6 @@ def mine_block():
         PROOF: proof
     }
     blockchain.append(block)
-    save_data()
     return True
 
 
@@ -165,6 +164,7 @@ while waiting_for_input:
     elif user_choice == '2':
         if mine_block():
             open_transactions = [] 
+            save_data()
     elif user_choice == '3':
         print_blockchain_elements()
     elif user_choice == '4':
