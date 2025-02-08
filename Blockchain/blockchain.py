@@ -19,21 +19,26 @@ participants = {owner}
 
 
 def save_data():
-    with open('blockchain.txt', mode='w') as f:
-        f.write(json.dumps(blockchain))
-        f.write('\n')
-        f.write(json.dumps(open_transactions))
-    '''
-    with open('blockchain.txt', mode='wb') as f: #Work with binary
-        save_data = {
-            'chain': blockchain,
-            'ot': open_transactions
-        }
-        f.write(pickle.dumps(save_data))
-    '''
+    try:
+        with open('blockchain.txt', mode='w') as f:
+            f.write(json.dumps(blockchain))
+            f.write('\n')
+            f.write(json.dumps(open_transactions))
+        '''
+        with open('blockchain.txt', mode='wb') as f: #Work with binary
+            save_data = {
+                'chain': blockchain,
+                'ot': open_transactions
+            }
+            f.write(pickle.dumps(save_data))
+        '''
+    except IOError:
+        print('Saving failed!')
         
         
 def load_data():
+    global blockchain
+    global open_transactions        
     '''
     with open('blockchain.txt', mode='rb') as f:
         file_content = pickle.loads(f.read())
@@ -43,28 +48,23 @@ def load_data():
         blockchain = file_content['chain']
         open_transactions = file_content['ot']
     '''
-    with open('blockchain.txt', mode='r') as f:
-        file_content = f.readlines()
-        global blockchain
-        global open_transactions
-        #blockchain = [ block[TRANSACTIONS] = OrderedDict( [(k, v) for k, v in block[TRANSACTIONS].items()] ) for block in json.loads(file_content[0][:-1]) ]
-        blockchain = json.loads(file_content[0][:-1])
-        updated_blockchain = []
-        for block in blockchain:
-            
-            # updated_block = {}
-            # updated_block[PREVIOUS_HASH] = block[PREVIOUS_HASH]
-            # updated_block[INDEX] = block[INDEX]
-            # updated_block[PROOF] = block[PROOF]
-            
-            updated_block = block.copy()
-            updated_block[TRANSACTIONS] = [ OrderedDict( [(k, v) for k, v in transaction.items()] ) for transaction in block[TRANSACTIONS] ] 
-            updated_blockchain.append(updated_block)
-        blockchain = updated_blockchain
-        open_transactions = [OrderedDict([(k, v) for k, v in d.items()]) for d in json.loads(file_content[1])]
+    try:
+        with open('blockchain.txt', mode='r') as f:
+            file_content = f.readlines()
+            blockchain = json.loads(file_content[0][:-1])
+            updated_blockchain = []
+            for block in blockchain:
+                updated_block = block.copy()
+                updated_block[TRANSACTIONS] = [ OrderedDict( [(k, v) for k, v in transaction.items()] ) for transaction in block[TRANSACTIONS] ] 
+                updated_blockchain.append(updated_block)
+            blockchain = updated_blockchain
+            open_transactions = [OrderedDict([(k, v) for k, v in d.items()]) for d in json.loads(file_content[1])]
+    except IOError:
+        blockchain = [GENESIS_BLOCK]
+        open_transactions = []
         
-        
-load_data()
+            
+    load_data()
 
 
 def proof_of_work():
@@ -91,11 +91,6 @@ def add_transaction(recipient, sender=owner, amount=1.0):
         :recipient: Transaction recipient (default [1])
         :amount: Transaction amount (default 1.0 coin)
     '''
-    # transaction = {
-    #     SENDER: sender, 
-    #     RECIPIENT: recipient, 
-    #     AMOUNT: amount
-    # }
     transaction = OrderedDict([
         (SENDER, sender), 
          (RECIPIENT, recipient), 
@@ -114,13 +109,6 @@ def mine_block():
     last_block = blockchain[-1]
     hashed_block = hash_block(last_block)
     proof = proof_of_work()
-    #Let see our hash:
-    print(hashed_block)
-    # reward_transaction = {
-    #     SENDER: SYSTEM_ACCOUNT,
-    #     RECIPIENT: owner,
-    #     AMOUNT: MINING_REWARD
-    # }
     reward_transaction = OrderedDict([
         (SENDER, SYSTEM_ACCOUNT),
         (RECIPIENT, owner),
@@ -191,7 +179,6 @@ while waiting_for_input:
             print(S_T_MSG)
         else:
             print(F_T_MSG)    
-        print(open_transactions)
     elif user_choice == '2':
         if mine_block():
             open_transactions = [] 
@@ -217,6 +204,5 @@ while waiting_for_input:
     print('Balance of {}: {:6.2f}'.format(owner, get_balance(owner)))         
 else:
     print(Q_MSG)
-    print(R_MSG)
-    print(*blockchain)    
+    print(R_MSG)  
     print(F_MSG)
