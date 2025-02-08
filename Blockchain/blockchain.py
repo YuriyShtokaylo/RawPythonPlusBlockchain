@@ -19,21 +19,26 @@ participants = {owner}
 
 
 def save_data():
-    with open('blockchain.txt', mode='w') as f:
-        f.write(json.dumps(blockchain))
-        f.write('\n')
-        f.write(json.dumps(open_transactions))
-    '''
-    with open('blockchain.txt', mode='wb') as f: #Work with binary
-        save_data = {
-            'chain': blockchain,
-            'ot': open_transactions
-        }
-        f.write(pickle.dumps(save_data))
-    '''
+    try:
+        with open('blockchain.txt', mode='w') as f:
+            f.write(json.dumps(blockchain))
+            f.write('\n')
+            f.write(json.dumps(open_transactions))
+        '''
+        with open('blockchain.txt', mode='wb') as f: #Work with binary
+            save_data = {
+                'chain': blockchain,
+                'ot': open_transactions
+            }
+            f.write(pickle.dumps(save_data))
+        '''
+    except IOError:
+        print('Saving failed!')
         
         
 def load_data():
+    global blockchain
+    global open_transactions        
     '''
     with open('blockchain.txt', mode='rb') as f:
         file_content = pickle.loads(f.read())
@@ -43,29 +48,24 @@ def load_data():
         blockchain = file_content['chain']
         open_transactions = file_content['ot']
     '''
-    with open('blockchain.txt', mode='r') as f:
-        file_content = f.readlines()
-        global blockchain
-        global open_transactions
-        blockchain = json.loads(file_content[0][:-1])
-        updated_blockchain = []
-        for block in blockchain:
-            updated_block = block.copy()
-            updated_block[TRANSACTIONS] = [ OrderedDict( [(k, v) for k, v in transaction.items()] ) for transaction in block[TRANSACTIONS] ] 
-            updated_blockchain.append(updated_block)
-        blockchain = updated_blockchain
-        open_transactions = [OrderedDict([(k, v) for k, v in d.items()]) for d in json.loads(file_content[1])]
+    try:
+        with open('blockchain.txt', mode='r') as f:
+            file_content = f.readlines()
+            blockchain = json.loads(file_content[0][:-1])
+            updated_blockchain = []
+            for block in blockchain:
+                updated_block = block.copy()
+                updated_block[TRANSACTIONS] = [ OrderedDict( [(k, v) for k, v in transaction.items()] ) for transaction in block[TRANSACTIONS] ] 
+                updated_blockchain.append(updated_block)
+            blockchain = updated_blockchain
+            open_transactions = [OrderedDict([(k, v) for k, v in d.items()]) for d in json.loads(file_content[1])]
+    except IOError:
+        blockchain = [GENESIS_BLOCK]
+        open_transactions = []
         
-try:        
+            
     load_data()
-except IOError:
-    print('File not found!')
-except ValueError:
-    print('Value error!')
-except:
-    print('Wildcard!')
-finally:
-    print('I use try - except - finally')
+
 
 def proof_of_work():
     last_block = blockchain[-1]
