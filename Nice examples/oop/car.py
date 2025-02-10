@@ -2,9 +2,9 @@ class Car:
     # top_speed = 100
     # warnings = []
 
-    def __init__(self, top_speed=100, warnings=[]):
+    def __init__(self, top_speed=100):
         self.top_speed = top_speed
-        self.warnings = warnings
+        self.warnings = []
 
     def drive(self):
         print('I am driving but certainly not faster than {}'.format(self.top_speed))
@@ -19,7 +19,8 @@ car2 = Car(200)
 car2.drive()
 print(car2.warnings)
 
-car3 = Car(warnings=['A'])
+car3 = Car()
+car3.warnings=['A']
 car3.drive()
 print(car3.warnings)
 print(car2.warnings)
