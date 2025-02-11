@@ -1,4 +1,4 @@
-from block import Block
+from classes.block import Block
 
 MINING_REWARD = 10
 SYSTEM_ACCOUNT = 'MINING'
