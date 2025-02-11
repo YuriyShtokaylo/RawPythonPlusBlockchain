@@ -1,9 +1,7 @@
 from functools import reduce
-import hashlib as hl
-from collections import OrderedDict
 import json
-import pickle
 from classes.block import Block
+from classes.transaction import Transaction
 
 
 from Helpers.consts import GENESIS_BLOCK, SENDER, RECIPIENT, AMOUNT, SYSTEM_ACCOUNT, MINING_REWARD, PREVIOUS_HASH, INDEX, TRANSACTIONS, PROOF, ASK_MSG, O1_MSG, O2_MSG, O3_MSG, O4_MSG, O5_MSG, O6_MSG, O7_MSG, O_BLOCK_MSG, S_T_MSG, F_MSG, F_T_MSG, E_MSG, Q_MSG, R_MSG
@@ -22,10 +20,11 @@ participants = {owner}
 def save_data():
     try:
         with open('blockchain.txt', mode='w') as f:
-            saveable_chain = [block.__dict__ for block in blockchain]
+            saveable_chain = [block.do_saveable() for block in blockchain]
             f.write(json.dumps(saveable_chain))
             f.write('\n')
-            f.write(json.dumps(open_transactions))
+            saveable_transactions = [tx.__dict__ for tx in open_transactions]
+            f.write(json.dumps(saveable_transactions))
         '''
         with open('blockchain.txt', mode='wb') as f: #Work with binary
             save_data = {
@@ -56,14 +55,14 @@ def load_data():
             blockchain = json.loads(file_content[0][:-1])
             updated_blockchain = []
             for block in blockchain:
-                converted_tx = [OrderedDict(
-                    [(k, v) for k, v in transaction.items()]) for transaction in block[TRANSACTIONS]]
+                converted_tx = [Transaction(
+                    tx[SENDER], tx[RECIPIENT], tx[AMOUNT]) for tx in block[TRANSACTIONS]]
                 updated_block = Block(
                     block[INDEX], block[PREVIOUS_HASH], converted_tx, block[PROOF], block['timestamp'])
                 updated_blockchain.append(updated_block)
             blockchain = updated_blockchain
-            open_transactions = [OrderedDict(
-                [(k, v) for k, v in d.items()]) for d in json.loads(file_content[1])]
+            open_transactions = [Transaction(
+                tx[SENDER], tx[RECIPIENT], tx[AMOUNT]) for tx in json.loads(file_content[1])]
     except IOError:
         blockchain = [GENESIS_BLOCK]
         open_transactions = []
@@ -95,11 +94,7 @@ def add_transaction(recipient, sender=owner, amount=1.0):
         :recipient: Transaction recipient (default [1])
         :amount: Transaction amount (default 1.0 coin)
     '''
-    transaction = OrderedDict([
-        (SENDER, sender),
-        (RECIPIENT, recipient),
-        (AMOUNT, amount)
-    ])
+    transaction = Transaction(sender, recipient, amount)
     if verify_transaction(transaction):
         open_transactions.append(transaction)
         participants.add(sender)
@@ -113,11 +108,7 @@ def mine_block():
     last_block = blockchain[-1]
     hashed_block = hash_block(last_block)
     proof = proof_of_work()
-    reward_transaction = OrderedDict([
-        (SENDER, SYSTEM_ACCOUNT),
-        (RECIPIENT, owner),
-        (AMOUNT, MINING_REWARD)
-    ])
+    reward_transaction = Transaction(SYSTEM_ACCOUNT, owner, MINING_REWARD)
     copied_transactions = open_transactions[:]
     copied_transactions.append(reward_transaction)
     block = Block(len(blockchain), hashed_block, copied_transactions, proof)
@@ -138,14 +129,14 @@ def verify_chain():
 
 
 def get_balance(participant):
-    tx_sender = [[tx[AMOUNT] for tx in block.transactions if tx[SENDER]
+    tx_sender = [[tx.amount for tx in block.transactions if tx.sender
                   == participant] for block in blockchain]
-    open_tx_sender = [tx[AMOUNT]
-                      for tx in open_transactions if tx[SENDER] == participant]
+    open_tx_sender = [tx.amount
+                      for tx in open_transactions if tx.sender == participant]
     tx_sender.append(open_tx_sender)
     amount_sent = reduce(lambda tx_sum, tx_amt: tx_sum + sum(tx_amt)
                          if len(tx_amt) > 0 else tx_sum + 0, tx_sender, 0)
-    tx_recipient = [[tx[AMOUNT] for tx in block.transactions if tx[RECIPIENT]
+    tx_recipient = [[tx.amount for tx in block.transactions if tx.recipient
                      == participant] for block in blockchain]
     amount_received = reduce(lambda tx_sum, tx_amt: tx_sum + sum(tx_amt)
                              if len(tx_amt) > 0 else tx_sum + 0, tx_recipient, 0)
@@ -153,8 +144,8 @@ def get_balance(participant):
 
 
 def verify_transaction(transaction):
-    sender_balance = get_balance(transaction[SENDER])
-    return sender_balance >= transaction[AMOUNT]
+    sender_balance = get_balance(transaction.sender)
+    return sender_balance >= transaction.amount
 
 
 def print_blockchain_elements():
