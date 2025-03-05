@@ -1,3 +1,5 @@
+from classes.block import Block
+
 MINING_REWARD = 10
 SYSTEM_ACCOUNT = 'MINING'
 
@@ -30,9 +32,4 @@ S_T_MSG = 'Added transaction!'
 F_T_MSG = 'Transaction failed!'
 
 
-GENESIS_BLOCK = {
-    PREVIOUS_HASH: '', 
-    INDEX: 0, 
-    TRANSACTIONS: [],
-    PROOF: 100
-}
+GENESIS_BLOCK = Block(0, '', [], 100, 0)

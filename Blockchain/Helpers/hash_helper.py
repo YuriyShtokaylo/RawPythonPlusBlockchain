@@ -12,4 +12,5 @@ def hash_block(block):
     #we pass there string generated from our dict by method of json library - dumps
     #we use encode on it to get corect encoding
     #we use hexdigest on result of heshing to get a string result
-    return hash_string_256(json.dumps(block, sort_keys=True).encode())
+    hashable_block = block.__dict__.copy()
+    return hash_string_256(json.dumps(hashable_block, sort_keys=True).encode())
