@@ -1,4 +1,4 @@
-from .consts import CHOICE_MSG, ASK_FOR_RECIPIENT_MSG, ASK_FOR_AMOUNT_MSG
+from Helpers.consts import CHOICE_MSG, ASK_FOR_RECIPIENT_MSG, ASK_FOR_AMOUNT_MSG
 
 
 def get_user_choice():

@@ -2,12 +2,11 @@ from functools import reduce
 import json
 from classes.block import Block
 from classes.transaction import Transaction
-
+from classes.verification import Verification
 
 from Helpers.consts import GENESIS_BLOCK, SENDER, RECIPIENT, AMOUNT, SYSTEM_ACCOUNT, MINING_REWARD, PREVIOUS_HASH, INDEX, TRANSACTIONS, PROOF, ASK_MSG, O1_MSG, O2_MSG, O3_MSG, O4_MSG, O5_MSG, O6_MSG, O7_MSG, O_BLOCK_MSG, S_T_MSG, F_MSG, F_T_MSG, E_MSG, Q_MSG, R_MSG
-from Helpers.hash_helper import hash_string_256, hash_block
+from Helpers.hash_helper import hash_block
 from Helpers.input_helper import get_user_choice, get_transaction_value
-from Helpers.proof_helper import valid_proof
 
 
 # Initializing our blockchain list
@@ -74,7 +73,8 @@ def proof_of_work():
     last_block = blockchain[-1]
     last_hash = hash_block(last_block)
     proof = 0
-    while not valid_proof(open_transactions, last_hash, proof):
+    verifier = Verification()
+    while not verifier.valid_proof(open_transactions, last_hash, proof):
         proof += 1
     return proof
 
@@ -95,7 +95,8 @@ def add_transaction(recipient, sender=owner, amount=1.0):
         :amount: Transaction amount (default 1.0 coin)
     '''
     transaction = Transaction(sender, recipient, amount)
-    if verify_transaction(transaction):
+    verifier = Verification()
+    if verifier.verify_transaction(transaction, get_balance):
         open_transactions.append(transaction)
         participants.add(sender)
         participants.add(recipient)
@@ -116,18 +117,6 @@ def mine_block():
     return True
 
 
-def verify_chain():
-    for (index, block) in enumerate(blockchain):
-        if index == 0:
-            continue
-        if block.previous_hash != hash_block(blockchain[index - 1]):
-            return False
-        if not valid_proof(block.transactions[:-1], block.previous_hash, block.proof):
-            print('Proof of work is invalid')
-            return False
-    return True
-
-
 def get_balance(participant):
     tx_sender = [[tx.amount for tx in block.transactions if tx.sender
                   == participant] for block in blockchain]
@@ -141,11 +130,6 @@ def get_balance(participant):
     amount_received = reduce(lambda tx_sum, tx_amt: tx_sum + sum(tx_amt)
                              if len(tx_amt) > 0 else tx_sum + 0, tx_recipient, 0)
     return amount_received - amount_sent
-
-
-def verify_transaction(transaction):
-    sender_balance = get_balance(transaction.sender)
-    return sender_balance >= transaction.amount
 
 
 def print_blockchain_elements():
@@ -166,6 +150,7 @@ while waiting_for_input:
     print(O4_MSG)
     print(O6_MSG)
     user_choice = get_user_choice()
+    verifier = Verification()
     if user_choice == '1':
         tx_data = get_transaction_value()
         recipient, amount = tx_data
@@ -181,11 +166,15 @@ while waiting_for_input:
         print_blockchain_elements()
     elif user_choice == '4':
         print(participants)
+        if verifier.verify_transactions(open_transactions, get_balance):
+            print('All transactions are valid')
+        else:
+            print('There are invalid transactions')    
     elif user_choice == 'q':
         waiting_for_input = False
     else:
         print(O7_MSG)
-    if not verify_chain():
+    if not verifier.verify_chain(blockchain):
         print(E_MSG)
         break
     print('Balance of {}: {:6.2f}'.format(owner, get_balance(owner)))
