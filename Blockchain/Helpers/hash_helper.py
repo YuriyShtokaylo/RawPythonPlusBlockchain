@@ -1,6 +1,6 @@
 import hashlib as hl
 import json
-from .consts import TRANSACTIONS
+from Helpers.consts import TRANSACTIONS
 
 
 def hash_string_256(string):
