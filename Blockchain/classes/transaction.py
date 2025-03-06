@@ -8,6 +8,9 @@ class Transaction:
         self.recipient = recipient
         self.amount = amount
 
+    def __repr__(self):
+        return str(self.__dict__)
+
     def to_ordered_dict(self):
         ordered_dict = OrderedDict(
             [(SENDER, self.sender), (RECIPIENT, self.recipient), (AMOUNT, self.amount)])
