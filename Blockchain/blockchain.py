@@ -4,7 +4,6 @@ from classes.block import Block
 from classes.transaction import Transaction
 from classes.verification import Verification
 
-
 from Helpers.consts import GENESIS_BLOCK, SENDER, RECIPIENT, AMOUNT, SYSTEM_ACCOUNT, MINING_REWARD, PREVIOUS_HASH, INDEX, TRANSACTIONS, PROOF, ASK_MSG, O1_MSG, O2_MSG, O3_MSG, O4_MSG, O5_MSG, O6_MSG, O7_MSG, O_BLOCK_MSG, S_T_MSG, F_MSG, F_T_MSG, E_MSG, Q_MSG, R_MSG
 from Helpers.hash_helper import hash_block
 from Helpers.input_helper import get_user_choice, get_transaction_value

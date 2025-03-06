@@ -2,7 +2,6 @@ import hashlib as hl
 import json
 from Helpers.consts import TRANSACTIONS
 
-
 def hash_string_256(string):
     return hl.sha256(string).hexdigest()
 
