@@ -67,7 +67,7 @@ def load_data():
         blockchain = [GENESIS_BLOCK]
         open_transactions = []
 
-    load_data()
+load_data()
 
 
 def proof_of_work():
