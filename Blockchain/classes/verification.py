@@ -1,5 +1,4 @@
 from Helpers.hash_helper import hash_string_256, hash_block
-# from Helpers.proof_helper import valid_proof
 
 class Verification:
     def verify_chain(self, blockchain):
