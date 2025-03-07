@@ -3,8 +3,16 @@ from classes.verification import Verification
 from Helpers.consts import GENESIS_BLOCK, SENDER, RECIPIENT, AMOUNT, SYSTEM_ACCOUNT, MINING_REWARD, PREVIOUS_HASH, INDEX, TRANSACTIONS, PROOF, ASK_MSG, O1_MSG, O2_MSG, O3_MSG, O4_MSG, O5_MSG, O6_MSG, O7_MSG, O_BLOCK_MSG, S_T_MSG, F_MSG, F_T_MSG, E_MSG, Q_MSG, R_MSG
 from Helpers.input_helper import get_user_choice, get_transaction_value
 
+
 class Node:
-    def listen_for_input(self, participants, owner, blockchain, open_transactions, add_transaction, mine_block, save_data, print_blockchain_elements, get_balance):
+    def print_blockchain_elements(self, blockchain):
+        for block in blockchain:
+            print(O_BLOCK_MSG)
+            print(block)
+        else:
+            print('-' * 20)
+
+    def listen_for_input(self, participants, owner, blockchain, open_transactions, add_transaction, mine_block, save_data, get_balance):
         waiting_for_input = True
 
         while waiting_for_input:
@@ -28,13 +36,13 @@ class Node:
                     open_transactions = []
                     save_data()
             elif user_choice == '3':
-                print_blockchain_elements()
+                self.print_blockchain_elements(blockchain)
             elif user_choice == '4':
                 print(participants)
                 if verifier.verify_transactions(open_transactions, get_balance):
                     print('All transactions are valid')
                 else:
-                    print('There are invalid transactions')    
+                    print('There are invalid transactions')
             elif user_choice == 'q':
                 waiting_for_input = False
             else:
