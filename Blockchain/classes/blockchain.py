@@ -5,17 +5,17 @@ from classes.block import Block
 from classes.transaction import Transaction
 from classes.verification import Verification
 
-from Helpers.consts import OWNER, GENESIS_BLOCK, SENDER, RECIPIENT, AMOUNT, SYSTEM_ACCOUNT, MINING_REWARD, PREVIOUS_HASH, INDEX, TRANSACTIONS, PROOF
+from Helpers.consts import GENESIS_BLOCK, SENDER, RECIPIENT, AMOUNT, SYSTEM_ACCOUNT, MINING_REWARD, PREVIOUS_HASH, INDEX, TRANSACTIONS, PROOF
 from Helpers.hash_helper import hash_block
 
 
 class Blockchain:
 
-    def __init__(self, node):
+    def __init__(self, node_id):
         # Initializing our blockchain list
         self.chain = [GENESIS_BLOCK]
         self.open_transactions = []
-        self.node = node
+        self.hosting_node = node_id
         self.load_data()
 
     def save_data(self):
@@ -86,15 +86,18 @@ class Blockchain:
         hashed_block = hash_block(last_block)
         proof = self.proof_of_work()
         reward_transaction = Transaction(
-            SYSTEM_ACCOUNT, self.node.owner, MINING_REWARD)
+            SYSTEM_ACCOUNT, self.hosting_node, MINING_REWARD)
         copied_transactions = self.open_transactions[:]
         copied_transactions.append(reward_transaction)
         block = Block(len(self.chain), hashed_block,
                       copied_transactions, proof)
         self.chain.append(block)
+        self.open_transactions = []
+        self.save_data()
         return True
 
-    def get_balance(self, participant):
+    def get_balance(self):
+        participant = self.hosting_node
         tx_sender = [[tx.amount for tx in block.transactions if tx.sender
                       == participant] for block in self.chain]
         open_tx_sender = [tx.amount

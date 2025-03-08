@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from classes.verification import Verification
 from classes.blockchain import Blockchain
 
@@ -7,8 +9,9 @@ from Helpers.input_helper import get_user_choice, get_transaction_value
 
 class Node:
     def __init__(self):
-        self.blockchain = Blockchain(self)
-        self.owner = OWNER
+        #self.id = str(uuid4())
+        self.id = OWNER
+        self.blockchain = Blockchain(self.id)
         pass
 
     def print_blockchain_elements(self):
@@ -33,14 +36,12 @@ class Node:
             if user_choice == '1':
                 tx_data = get_transaction_value()
                 recipient, amount = tx_data
-                if self.blockchain.add_transaction(recipient, self.blockchain.node.owner, amount=amount):
+                if self.blockchain.add_transaction(recipient, self.id, amount=amount):
                     print(S_T_MSG)
                 else:
                     print(F_T_MSG)
             elif user_choice == '2':
-                if self.blockchain.mine_block():
-                    self.blockchain.open_transactions = []
-                    self.blockchain.save_data()
+                self.blockchain.mine_block()
             elif user_choice == '3':
                 self.print_blockchain_elements()
             elif user_choice == '4':
@@ -56,7 +57,7 @@ class Node:
                 print(E_MSG)
                 break
             print('Balance of {}: {:6.2f}'.format(
-                self.owner, self.blockchain.get_balance(self.blockchain.node.owner)))
+                self.owner, self.blockchain.get_balance()))
         else:
             print(Q_MSG)
             print(R_MSG)
