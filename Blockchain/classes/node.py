@@ -8,7 +8,6 @@ from Helpers.input_helper import get_user_choice, get_transaction_value
 class Node:
     def __init__(self):
         self.blockchain = Blockchain(self)
-        self.blockchain.load_data()
         self.owner = OWNER
         pass
 

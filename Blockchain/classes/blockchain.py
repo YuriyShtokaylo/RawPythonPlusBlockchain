@@ -16,6 +16,7 @@ class Blockchain:
         self.chain = [GENESIS_BLOCK]
         self.open_transactions = []
         self.node = node
+        self.load_data()
 
     def save_data(self):
         try:
@@ -45,8 +46,9 @@ class Blockchain:
                 self.open_transactions = [Transaction(
                     tx[SENDER], tx[RECIPIENT], tx[AMOUNT]) for tx in json.loads(file_content[1])]
         except IOError:
-            self.chain = [GENESIS_BLOCK]
-            self.open_transactions = []
+            print('Handled exception...')
+        finally:
+            print('Cleanup!')
 
     def proof_of_work(self):
         last_block = self.chain[-1]
@@ -68,7 +70,7 @@ class Blockchain:
 
         Arguments:
             :sender: Transaction sender.
-            :recipient: Transaction recipient (default [1])
+            :recipient: Transaction recipient
             :amount: Transaction amount (default 1.0 coin)
         '''
         transaction = Transaction(sender, recipient, amount)
