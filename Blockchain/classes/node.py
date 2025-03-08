@@ -9,7 +9,7 @@ from Helpers.input_helper import get_user_choice, get_transaction_value
 
 class Node:
     def __init__(self):
-        #self.id = str(uuid4())
+        # self.id = str(uuid4())
         self.id = OWNER
         self.blockchain = Blockchain(self.id)
         pass
@@ -32,7 +32,6 @@ class Node:
             print(O4_MSG)
             print(O6_MSG)
             user_choice = get_user_choice()
-            verifier = Verification()
             if user_choice == '1':
                 tx_data = get_transaction_value()
                 recipient, amount = tx_data
@@ -45,7 +44,7 @@ class Node:
             elif user_choice == '3':
                 self.print_blockchain_elements()
             elif user_choice == '4':
-                if verifier.verify_transactions(self.blockchain.open_transactions, self.blockchain.get_balance):
+                if Verification.verify_transactions(self.blockchain.open_transactions, self.blockchain.get_balance):
                     print('All transactions are valid')
                 else:
                     print('There are invalid transactions')
@@ -53,11 +52,11 @@ class Node:
                 waiting_for_input = False
             else:
                 print(O7_MSG)
-            if not verifier.verify_chain(self.blockchain.chain):
+            if not Verification.verify_chain(self.blockchain.chain):
                 print(E_MSG)
                 break
             print('Balance of {}: {:6.2f}'.format(
-                self.owner, self.blockchain.get_balance()))
+                self.id, self.blockchain.get_balance()))
         else:
             print(Q_MSG)
             print(R_MSG)
