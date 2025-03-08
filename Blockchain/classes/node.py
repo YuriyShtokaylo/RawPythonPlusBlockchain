@@ -15,7 +15,7 @@ class Node:
         pass
 
     def print_blockchain_elements(self):
-        for block in self.blockchain.get_chain():
+        for block in self.blockchain.chain:
             print(O_BLOCK_MSG)
             print(block)
         else:
@@ -52,7 +52,7 @@ class Node:
                 waiting_for_input = False
             else:
                 print(O7_MSG)
-            if not Verification.verify_chain(self.blockchain.get_chain()):
+            if not Verification.verify_chain(self.blockchain.chain):
                 print(E_MSG)
                 break
             print('Balance of {}: {:6.2f}'.format(

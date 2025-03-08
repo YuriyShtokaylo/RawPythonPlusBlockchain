@@ -13,13 +13,18 @@ class Blockchain:
 
     def __init__(self, node_id):
         # Initializing our blockchain list
-        self.__chain = [GENESIS_BLOCK]
+        self.chain = [GENESIS_BLOCK]
         self.__open_transactions = []
         self.hosting_node = node_id
         self.load_data()
 
-    def get_chain(self):
+    @property
+    def chain(self):
         return self.__chain[:]
+    
+    @chain.setter
+    def chain(self, val):
+        self.__chain = val
     
     def get_open_transactions(self):
         return self.__open_transactions[:]
@@ -48,7 +53,7 @@ class Blockchain:
                     updated_block = Block(
                         block[INDEX], block[PREVIOUS_HASH], converted_tx, block[PROOF], block['timestamp'])
                     updated_blockchain.append(updated_block)
-                self.__chain = updated_blockchain
+                self.chain = updated_blockchain
                 self.__open_transactions = [Transaction(
                     tx[SENDER], tx[RECIPIENT], tx[AMOUNT]) for tx in json.loads(file_content[1])]
         except IOError:
