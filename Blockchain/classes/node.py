@@ -1,14 +1,15 @@
 from classes.verification import Verification
 from classes.blockchain import Blockchain
 
-from Helpers.consts import ASK_MSG, O1_MSG, O2_MSG, O3_MSG, O4_MSG, O6_MSG, O7_MSG, O_BLOCK_MSG, S_T_MSG, F_MSG, F_T_MSG, E_MSG, Q_MSG, R_MSG
+from Helpers.consts import OWNER, ASK_MSG, O1_MSG, O2_MSG, O3_MSG, O4_MSG, O6_MSG, O7_MSG, O_BLOCK_MSG, S_T_MSG, F_MSG, F_T_MSG, E_MSG, Q_MSG, R_MSG
 from Helpers.input_helper import get_user_choice, get_transaction_value
 
 
 class Node:
     def __init__(self):
-        self.blockchain = Blockchain()
+        self.blockchain = Blockchain(self)
         self.blockchain.load_data()
+        self.owner = OWNER
         pass
 
     def print_blockchain_elements(self):
@@ -33,7 +34,7 @@ class Node:
             if user_choice == '1':
                 tx_data = get_transaction_value()
                 recipient, amount = tx_data
-                if self.blockchain.add_transaction(recipient, amount=amount):
+                if self.blockchain.add_transaction(recipient, self.blockchain.node.owner, amount=amount):
                     print(S_T_MSG)
                 else:
                     print(F_T_MSG)
@@ -44,7 +45,6 @@ class Node:
             elif user_choice == '3':
                 self.print_blockchain_elements()
             elif user_choice == '4':
-                print(self.blockchain.participants)
                 if verifier.verify_transactions(self.blockchain.open_transactions, self.blockchain.get_balance):
                     print('All transactions are valid')
                 else:
@@ -57,7 +57,7 @@ class Node:
                 print(E_MSG)
                 break
             print('Balance of {}: {:6.2f}'.format(
-                self.blockchain.owner, self.blockchain.get_balance(self.blockchain.owner)))
+                self.owner, self.blockchain.get_balance(self.blockchain.node.owner)))
         else:
             print(Q_MSG)
             print(R_MSG)

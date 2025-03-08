@@ -11,12 +11,11 @@ from Helpers.hash_helper import hash_block
 
 class Blockchain:
 
-    def __init__(self):
+    def __init__(self, node):
         # Initializing our blockchain list
         self.chain = [GENESIS_BLOCK]
         self.open_transactions = []
-        self.owner = OWNER
-        self.participants = {self.owner}
+        self.node = node
 
     def save_data(self):
         try:
@@ -64,7 +63,7 @@ class Blockchain:
             return None
         return self.chain[-1]
 
-    def add_transaction(self, recipient, sender=OWNER, amount=1.0):
+    def add_transaction(self, recipient, sender, amount=1.0):
         ''' Append a new value as well as the last blockchain to the blockchain
 
         Arguments:
@@ -76,8 +75,6 @@ class Blockchain:
         verifier = Verification()
         if verifier.verify_transaction(transaction, self.get_balance):
             self.open_transactions.append(transaction)
-            self.participants.add(sender)
-            self.participants.add(recipient)
             self.save_data()
             return True
         return False
@@ -87,7 +84,7 @@ class Blockchain:
         hashed_block = hash_block(last_block)
         proof = self.proof_of_work()
         reward_transaction = Transaction(
-            SYSTEM_ACCOUNT, self.owner, MINING_REWARD)
+            SYSTEM_ACCOUNT, self.node.owner, MINING_REWARD)
         copied_transactions = self.open_transactions[:]
         copied_transactions.append(reward_transaction)
         block = Block(len(self.chain), hashed_block,
