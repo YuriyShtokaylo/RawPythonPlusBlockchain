@@ -1,5 +1,7 @@
 from classes.block import Block
 
+OWNER = 'Yuriy'
+
 MINING_REWARD = 10
 SYSTEM_ACCOUNT = 'MINING'
 

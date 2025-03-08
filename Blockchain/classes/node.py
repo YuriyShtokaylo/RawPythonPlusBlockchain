@@ -1,25 +1,27 @@
-from classes.verification import Verification
+from uuid import uuid4
 
-from Helpers.consts import GENESIS_BLOCK, SENDER, RECIPIENT, AMOUNT, SYSTEM_ACCOUNT, MINING_REWARD, PREVIOUS_HASH, INDEX, TRANSACTIONS, PROOF, ASK_MSG, O1_MSG, O2_MSG, O3_MSG, O4_MSG, O5_MSG, O6_MSG, O7_MSG, O_BLOCK_MSG, S_T_MSG, F_MSG, F_T_MSG, E_MSG, Q_MSG, R_MSG
+from classes.verification import Verification
+from classes.blockchain import Blockchain
+
+from Helpers.consts import OWNER, ASK_MSG, O1_MSG, O2_MSG, O3_MSG, O4_MSG, O6_MSG, O7_MSG, O_BLOCK_MSG, S_T_MSG, F_MSG, F_T_MSG, E_MSG, Q_MSG, R_MSG
 from Helpers.input_helper import get_user_choice, get_transaction_value
 
 
 class Node:
-    def __init__(self, participants, owner, blockchain, open_transactions):
-        self.participants = participants
-        self.owner = owner
-        self.blockchain = blockchain
-        self.open_transactions = open_transactions
+    def __init__(self):
+        # self.id = str(uuid4())
+        self.id = OWNER
+        self.blockchain = Blockchain(self.id)
         pass
 
     def print_blockchain_elements(self):
-        for block in self.blockchain:
+        for block in self.blockchain.chain:
             print(O_BLOCK_MSG)
             print(block)
         else:
             print('-' * 20)
 
-    def listen_for_input(self, add_transaction, mine_block, save_data, get_balance):
+    def listen_for_input(self):
         waiting_for_input = True
 
         while waiting_for_input:
@@ -30,23 +32,19 @@ class Node:
             print(O4_MSG)
             print(O6_MSG)
             user_choice = get_user_choice()
-            verifier = Verification()
             if user_choice == '1':
                 tx_data = get_transaction_value()
                 recipient, amount = tx_data
-                if add_transaction(recipient, amount=amount):
+                if self.blockchain.add_transaction(recipient, self.id, amount=amount):
                     print(S_T_MSG)
                 else:
                     print(F_T_MSG)
             elif user_choice == '2':
-                if mine_block():
-                    open_transactions = []
-                    save_data()
+                self.blockchain.mine_block()
             elif user_choice == '3':
-                self.print_blockchain_elements(self.blockchain)
+                self.print_blockchain_elements()
             elif user_choice == '4':
-                print(self.participants)
-                if verifier.verify_transactions(open_transactions, get_balance):
+                if Verification.verify_transactions(self.blockchain.get_open_transactions(), self.blockchain.get_balance):
                     print('All transactions are valid')
                 else:
                     print('There are invalid transactions')
@@ -54,11 +52,11 @@ class Node:
                 waiting_for_input = False
             else:
                 print(O7_MSG)
-            if not verifier.verify_chain(self.blockchain):
+            if not Verification.verify_chain(self.blockchain.chain):
                 print(E_MSG)
                 break
             print('Balance of {}: {:6.2f}'.format(
-                self.owner, get_balance(self.owner)))
+                self.id, self.blockchain.get_balance()))
         else:
             print(Q_MSG)
             print(R_MSG)
