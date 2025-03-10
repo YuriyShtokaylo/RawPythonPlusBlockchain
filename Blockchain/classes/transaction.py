@@ -1,6 +1,8 @@
 from collections import OrderedDict
-from Helpers.consts import SENDER, RECIPIENT, AMOUNT
-from classes.printable import Printable
+
+from utility.classes.printable import Printable
+
+from utility.consts import SENDER, RECIPIENT, AMOUNT
 
 
 class Transaction(Printable):

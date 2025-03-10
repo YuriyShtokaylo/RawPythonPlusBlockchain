@@ -1,18 +1,27 @@
+"""Common hashing functionality"""
+
+
 import hashlib as hl
 import json
-from Helpers.consts import TRANSACTIONS
+
+from utility.consts import TRANSACTIONS
 
 
 def hash_string_256(string):
+    """Creates a SHA256 hash for a given input string.
+    
+    Arguments:
+        :string: The string which should be hashed.
+    """
     return hl.sha256(string).hexdigest()
 
 
 def hash_block(block):
-    # EXPLANATION:
-    # hashlib uses sha256 to generate hash in binary format
-    # we pass there string generated from our dict by method of json library - dumps
-    # we use encode on it to get corect encoding
-    # we use hexdigest on result of heshing to get a string result
+    """Hashes a block and returns a string representation of it.
+    
+    Arguments:
+        :block: The block that should be hashed.
+    """
     hashable_block = block.__dict__.copy()
     hashable_block[TRANSACTIONS] = [tx.to_ordered_dict()
                                     for tx in hashable_block[TRANSACTIONS]]

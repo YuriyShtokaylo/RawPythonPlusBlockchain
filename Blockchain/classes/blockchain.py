@@ -3,10 +3,12 @@ import json
 
 from classes.block import Block
 from classes.transaction import Transaction
-from classes.verification import Verification
 
-from Helpers.consts import GENESIS_BLOCK, SENDER, RECIPIENT, AMOUNT, SYSTEM_ACCOUNT, MINING_REWARD, PREVIOUS_HASH, INDEX, TRANSACTIONS, PROOF
-from Helpers.hash_helper import hash_block
+from utility.classes.verification import Verification
+
+from utility.consts import GENESIS_BLOCK, SENDER, RECIPIENT, AMOUNT, SYSTEM_ACCOUNT, MINING_REWARD, PREVIOUS_HASH, INDEX, TRANSACTIONS, PROOF
+
+from utility.helpers.hash_helper import hash_block
 
 
 class Blockchain:

@@ -1,7 +1,10 @@
-from Helpers.hash_helper import hash_string_256, hash_block
+"""Provides verification helper methods."""
+
+from utility.helpers.hash_helper import hash_string_256, hash_block
 
 
 class Verification:
+    """A helper class which offer various static and class-based verifications methods"""
     @classmethod
     def verify_chain(cls, blockchain):
         for (index, block) in enumerate(blockchain):

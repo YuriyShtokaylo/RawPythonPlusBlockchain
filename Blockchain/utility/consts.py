@@ -1,3 +1,6 @@
+"""Common constants"""
+
+
 from classes.block import Block
 
 OWNER = 'Yuriy'
