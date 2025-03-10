@@ -1,8 +1,10 @@
 """Common hashing functionality"""
 
 
-import hashlib as _hl
-import _json
+import hashlib as hl
+import json
+
+__all__ = ['hash_string_256', 'hash_block']
 
 from utility.consts import TRANSACTIONS
 
@@ -13,7 +15,7 @@ def hash_string_256(string):
     Arguments:
         :string: The string which should be hashed.
     """
-    return _hl.sha256(string).hexdigest()
+    return hl.sha256(string).hexdigest()
 
 
 def hash_block(block):
@@ -25,4 +27,4 @@ def hash_block(block):
     hashable_block = block.__dict__.copy()
     hashable_block[TRANSACTIONS] = [tx.to_ordered_dict()
                                     for tx in hashable_block[TRANSACTIONS]]
-    return hash_string_256(_json.dumps(hashable_block, sort_keys=True).encode())
+    return hash_string_256(json.dumps(hashable_block, sort_keys=True).encode())
