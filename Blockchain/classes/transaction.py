@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 from utility.classes.printable import Printable
 
-from utility.consts import SENDER, RECIPIENT, AMOUNT
+from configs.consts import SENDER, RECIPIENT, AMOUNT
 
 
 class Transaction(Printable):

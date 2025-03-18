@@ -6,7 +6,7 @@ import json
 
 __all__ = ['hash_string_256', 'hash_block']
 
-from utility.consts import TRANSACTIONS
+from configs.consts import TRANSACTIONS
 
 
 def hash_string_256(string):

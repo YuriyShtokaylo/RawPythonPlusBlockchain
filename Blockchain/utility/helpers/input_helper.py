@@ -1,7 +1,7 @@
 """Common input functionality"""
 
 
-from utility.consts import CHOICE_MSG, ASK_FOR_RECIPIENT_MSG, ASK_FOR_AMOUNT_MSG
+from configs.consts import CHOICE_MSG, ASK_FOR_RECIPIENT_MSG, ASK_FOR_AMOUNT_MSG
 
 """Read user input"""
 

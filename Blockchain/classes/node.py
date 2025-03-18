@@ -4,7 +4,7 @@ from classes.blockchain import Blockchain
 
 from utility.classes.verification import Verification
 
-from utility.consts import OWNER, ASK_MSG, O1_MSG, O2_MSG, O3_MSG, O4_MSG, O6_MSG, O7_MSG, O_BLOCK_MSG, S_T_MSG, F_MSG, F_T_MSG, E_MSG, Q_MSG, R_MSG
+from configs.consts import OWNER, ASK_MSG, O1_MSG, O2_MSG, O3_MSG, O4_MSG, O6_MSG, O7_MSG, O_BLOCK_MSG, S_T_MSG, F_MSG, F_T_MSG, E_MSG, Q_MSG, R_MSG
 from utility.helpers.input_helper import get_user_choice, get_transaction_value
 
 

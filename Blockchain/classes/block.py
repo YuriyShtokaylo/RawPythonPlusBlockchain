@@ -2,6 +2,8 @@ from time import time
 
 from utility.classes.printable import Printable
 
+from configs.consts import TRANSACTIONS
+
 
 class Block(Printable):
     def __init__(self, index, previous_hash, transactions, proof, time=time()):
@@ -15,5 +17,5 @@ class Block(Printable):
         saveable = self.__dict__.copy()
         saveable_transactions = [
             tx.__dict__ for tx in self.transactions.copy()]
-        saveable['transactions'] = saveable_transactions
+        saveable[TRANSACTIONS] = saveable_transactions
         return saveable

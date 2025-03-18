@@ -1,8 +1,6 @@
 """Common constants"""
 
 
-from classes.block import Block
-
 OWNER = 'Yuriy'
 
 MINING_REWARD = 10
@@ -35,6 +33,3 @@ R_MSG = 'Here is blockchain we get:'
 F_MSG = 'Done!'
 S_T_MSG = 'Added transaction!'
 F_T_MSG = 'Transaction failed!'
-
-
-GENESIS_BLOCK = Block(0, '', [], 100, 0)

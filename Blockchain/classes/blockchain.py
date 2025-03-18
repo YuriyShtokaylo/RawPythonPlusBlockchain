@@ -6,9 +6,13 @@ from classes.transaction import Transaction
 
 from utility.classes.verification import Verification
 
-from utility.consts import GENESIS_BLOCK, SENDER, RECIPIENT, AMOUNT, SYSTEM_ACCOUNT, MINING_REWARD, PREVIOUS_HASH, INDEX, TRANSACTIONS, PROOF
+from configs.consts import SENDER, RECIPIENT, AMOUNT, SYSTEM_ACCOUNT, MINING_REWARD, PREVIOUS_HASH, INDEX, TRANSACTIONS, PROOF
+from configs.stubs import GENESIS_BLOCK
 
 from utility.helpers.hash_helper import hash_block
+
+
+print(__name__)
 
 
 class Blockchain:
@@ -23,18 +27,19 @@ class Blockchain:
     @property
     def chain(self):
         return self.__chain[:]
-    
+
     @chain.setter
     def chain(self, val):
         self.__chain = val
-    
+
     def get_open_transactions(self):
         return self.__open_transactions[:]
 
     def save_data(self):
         try:
             with open('blockchain.txt', mode='w') as f:
-                saveable_chain = [block.do_saveable() for block in self.__chain]
+                saveable_chain = [block.do_saveable()
+                                  for block in self.__chain]
                 f.write(json.dumps(saveable_chain))
                 f.write('\n')
                 saveable_transactions = [
