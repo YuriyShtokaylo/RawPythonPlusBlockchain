@@ -1,9 +1,17 @@
-from Helpers.consts import CHOICE_MSG, ASK_FOR_RECIPIENT_MSG, ASK_FOR_AMOUNT_MSG
+"""Common input functionality"""
+
+
+from configs.consts import CHOICE_MSG, ASK_FOR_RECIPIENT_MSG, ASK_FOR_AMOUNT_MSG
+
+"""Read user input"""
 
 
 def get_user_choice():
     user_input = input(CHOICE_MSG)
     return user_input
+
+
+"""Get transacton data provided by user"""
 
 
 def get_transaction_value():
